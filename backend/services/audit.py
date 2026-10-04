@@ -132,12 +132,20 @@ answering it would clarify. Order them by how decisive they are.
 
 First, decide what this particular decision turns on. Return four to eight
 "dimensions": the things that genuinely matter for this decision, and the words
-the person used or would use for each. Do not reuse a fixed list: a decision
-about moving house turns on different things than a decision about a job. For
-each dimension give two to twelve lowercase words or short phrases, including
-the person's own vocabulary. These keywords are counted mechanically against
-the person's text, so choose words that actually appear in everyday speech for
-that idea.
+the person used or would use for each.
+
+Choose these dimensions from what the decision requires, not from what the
+person happened to write about. Include the dimensions that matter for this
+kind of decision even when the person never mentioned them. A dimension they
+left out is the most valuable thing you can return, because it is counted
+against their text and reported back as a gap. If you list only the things they
+already talked about, nothing can be found missing.
+
+Do not reuse a fixed list: a decision about moving house turns on different
+things than a decision about a dog. For each dimension give two to twelve
+lowercase words or short phrases, including the person's own vocabulary. These
+keywords are counted mechanically against the person's text, so choose words
+that actually appear in everyday speech for that idea.
 """
 
 

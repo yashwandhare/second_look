@@ -31,6 +31,11 @@ from backend.services import firestore
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# The Firestore client sends the API key as a query parameter, so its INFO logs
+# would print the key in full. Keep that logger quiet; errors still surface.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+
 DEFAULT_PORT = 8000
 
 

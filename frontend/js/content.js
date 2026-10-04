@@ -8,32 +8,40 @@
    ------------------------------------------------------------------------- */
 
 const EXAMPLES = {
-  internship: {
-    decision: "Whether to accept a 6-month internship",
-    leaning: "Leaning toward accepting it",
+  dog: {
+    decision: "Whether to adopt a rescue dog",
+    leaning: "Leaning toward adopting this weekend",
     reasons:
-      "The stipend is good. The company is close to home so I save on travel and can stay with my family. " +
-      "It will give me industry experience and look good on my resume. The stipend is better than anything " +
-      "else I have been offered, and honestly the stipend alone makes it worth it.",
-    priorities: "Career growth and my academics. My degree matters most to me.",
+      "I have wanted a dog since college and the flat has felt empty for a year. " +
+      "The shelter has a beagle mix that is already house-trained, and they say she is " +
+      "good with people. I want the company. I think having a dog would get me out of the " +
+      "house more, and honestly I have wanted this for so long that it feels like a life " +
+      "thing rather than a purchase. The building does not officially allow pets but nobody " +
+      "really checks, and half the flats have cats anyway.",
+    priorities: "My independence, and my work commitments. I travel for work sometimes.",
   },
-  job: {
-    decision: "Whether to take this job offer or stay where I am",
-    leaning: "Leaning toward taking the new job",
+  relocate: {
+    decision: "Whether to move to Pune for my partner's job",
+    leaning: "Leaning toward moving in with them",
     reasons:
-      "The new role pays about 30 percent more and the team works on newer technology, which I think " +
-      "will help my career. My current job is comfortable and I like the people. The new company is a " +
-      "startup, so there is more risk. The new office is further away.",
-    priorities: "Learning new things and job stability.",
+      "My partner got a much better offer in Pune and it is a genuinely big step for their " +
+      "career. Rent there is cheaper than here, so we would actually save money. I can do " +
+      "my own job remotely, at least for now. After two years of long distance it would be " +
+      "good for us to finally live in the same city. I have not really looked at what my own " +
+      "work looks like there, but I am not worried about that side of it.",
+    priorities: "My career and my relationship. Both matter to me.",
   },
-  masters: {
-    decision: "Whether to do a masters degree or start working",
-    leaning: "Leaning toward the masters",
+  housing: {
+    decision: "Whether to buy a flat now or keep renting for two more years",
+    leaning: "Leaning toward buying now",
     reasons:
-      "A masters would let me specialise and I have always wanted to study further. It costs a lot and " +
-      "takes two years. My friends are all either working or applying abroad. I think a masters is the " +
-      "safer path for a better salary later.",
-    priorities: "Long-term earning and not falling behind my peers.",
+      "My rent goes up every single year and I am paying off someone else's mortgage. " +
+      "The EMI on the flat I like would be roughly what I already pay in rent, so the " +
+      "monthly outgoing barely changes. My parents have offered to cover most of the down " +
+      "payment. Prices in that area have only gone up since 2021 and everyone says it will " +
+      "keep going. Renting just feels like throwing money away. Colleagues who bought two " +
+      "years ago have more equity now than I have in savings.",
+    priorities: "Long-term financial security.",
   },
 };
 
