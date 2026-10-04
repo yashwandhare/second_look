@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Second Look audits how you are thinking about a decision and shows you what your reasoning may be missing. It never tells you what to choose."
+  />
+  <title>Second Look — what might you be missing?</title>
+  <link rel="stylesheet" href="static/css/style.css?v=2" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>
+          <span class="brand-name">Second Look</span>
+          <span class="brand-sub">&nbsp;· promptwars 2026</span>
+        </span>
+      </a>
+      <p class="header-note">It audits your thinking. It never decides for you.</p>
+    </div>
+  </header>
+
+  <main id="main" class="container" tabindex="-1">
+    <!-- ================= Intake ================= -->
+    <section id="intake-view" class="hero" aria-labelledby="hero-title">
+      <p class="hero-eyebrow">A second look at your reasoning</p>
+      <h1 id="hero-title">Don&rsquo;t ask AI what to decide. Ask it what you might be missing.</h1>
+      <p class="hero-lede">
+        Describe a decision and the reasons you are leaning that way. You get back
+        the assumptions you have not checked, the factors you have not mentioned,
+        and the places your reasoning disagrees with itself.
+      </p>
+      <p class="hero-note">
+        Every finding comes back as a question. There is no recommendation, no
+        score, and no &ldquo;best option&rdquo;.
+      </p>
+
+      <form id="audit-form" class="intake" novalidate>
+        <h2 class="intake-title">Tell it what you are deciding</h2>
+        <p class="intake-sub">Three fields. About a minute of typing.</p>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="decision">What are you deciding?</label>
+          </div>
+          <input
+            id="decision"
+            name="decision"
+            type="text"
+            required
+            maxlength="2000"
+            autocomplete="off"
+            placeholder="Whether to accept a 6-month internship"
+            aria-describedby="decision-error"
+            autofocus
+          />
+          <p id="decision-error" class="form-error" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="leaning">Which way are you leaning?</label>
+            <span class="optional">Optional</span>
+          </div>
+          <input
+            id="leaning"
+            name="leaning"
+            type="text"
+            maxlength="1000"
+            autocomplete="off"
+            placeholder="Leaning toward accepting it"
+            aria-describedby="leaning-hint"
+          />
+          <p id="leaning-hint" class="label-hint">
+            Naming the direction helps the audit check whether your reasons
+            actually support it.
+          </p>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="reasons">Why are you leaning that way?</label>
+            <span class="label-hint">Say it the way you would say it to a friend</span>
+          </div>
+          <textarea
+            id="reasons"
+            name="reasons"
+            rows="7"
+            required
+            maxlength="8000"
+            placeholder="The stipend is good, the office is close to home, and it will look good on my resume."
+            aria-describedby="reasons-hint reasons-error"
+          ></textarea>
+          <p id="reasons-hint" class="label-hint">
+            Mention everything you are weighing, even the small things. The audit
+            measures how much attention each factor gets.
+          </p>
+          <p id="reasons-error" class="form-error" role="alert" hidden></p>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <label for="priorities">What matters most to you here?</label>
+            <span class="optional">Optional</span>
+          </div>
+          <textarea
+            id="priorities"
+            name="priorities"
+            rows="3"
+            maxlength="2000"
+            placeholder="Career growth, and my academics. My degree comes first."
+          ></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button id="submit-button" class="btn btn-primary" type="submit">
+            Take a second look
+          </button>
+          <span id="form-status" class="label-hint" role="status" aria-live="polite"></span>
+        </div>
+        <p class="kbd-hint">
+          Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run the audit from anywhere in the form.
+        </p>
+
+        <p id="form-error" class="form-error" role="alert" hidden></p>
+
+        <div class="examples">
+          <span class="examples-label">Start from an example</span>
+          <button class="chip" type="button" data-example="internship">
+            The internship
+          </button>
+          <button class="chip" type="button" data-example="job">
+            A job offer
+          </button>
+          <button class="chip" type="button" data-example="masters">
+            Masters or a job
+          </button>
+        </div>
+      </form>
+
+      <!-- Recent audits, loaded from Firestore. Hidden until there is something
+           to show, so a first-time visitor sees only the form. -->
+      <section id="history" class="history" aria-labelledby="history-title" hidden>
+        <p class="section-label">Your history</p>
+        <h2 id="history-title" class="section-title">Decisions you have audited</h2>
+        <p class="section-sub">
+          Stored in Google Firestore. Select one to load it back into the form and
+          run a fresh audit.
+        </p>
+        <ul id="history-list" class="history-list"></ul>
+      </section>
+
+      <!-- Cross-decision pattern. Populated only when enough history exists. -->
+      <section
+        id="silence"
+        class="history"
+        aria-label="Habitual blind spots"
+        hidden
+      ></section>
+    </section>
+
+    <!-- ================= Loading ================= -->
+    <section id="loading-view" class="loading" hidden aria-labelledby="loading-status">
+      <p id="loading-status" class="loading-status" role="status" aria-live="polite">
+        Reading your reasoning&hellip;
+      </p>
+      <ul class="loading-steps" id="loading-steps">
+        <li data-step="0"><span class="step-dot"></span> Measuring how much attention each factor got</li>
+        <li data-step="1"><span class="step-dot"></span> Looking for assumptions you have not checked</li>
+        <li data-step="2"><span class="step-dot"></span> Checking your reasoning against itself</li>
+        <li data-step="3"><span class="step-dot"></span> Ranking the questions worth answering</li>
+      </ul>
+      <div class="skeleton" aria-hidden="true"></div>
+      <div class="skeleton" aria-hidden="true"></div>
+    </section>
+
+    <!-- ================= Results ================= -->
+    <section
+      id="results-view"
+      class="results"
+      hidden
+      tabindex="-1"
+      aria-labelledby="results-title"
+    ></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <p>
+          Second Look surfaces assumptions, omissions and contradictions in your
+          own thinking. It does not recommend an option.
+        </p>
+        <p class="footer-note">
+          Built for PromptWars 2026. Analysis by Google Gemini. Attention counts are
+          measured directly in your text, not guessed by a model.
+        </p>
+      </div>
+      <div>
+        <p class="footer-note">
+          <a href="/docs">API documentation</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="static/js/app.js?v=2"></script>
+</body>
+</html>
