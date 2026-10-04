@@ -113,7 +113,7 @@ def create_app() -> FastAPI:
         """Report service health and integration status."""
         return {
             "status": "ok",
-            "service": "reasoning-auditor",
+            "service": "second-look",
             "google_services": {
                 "gemini": (
                     "configured"
