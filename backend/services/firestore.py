@@ -108,9 +108,22 @@ def _from_fields(fields: dict) -> dict[str, Any]:
 
 
 def _request(
-    method: str, url: str, extra_params: dict | None = None, **kwargs: Any
+    method: str,
+    url: str,
+    extra_params: dict | None = None,
+    allow_not_found: bool = False,
+    **kwargs: Any,
 ) -> httpx.Response:
-    """Send one request to Firestore, adding the API key and error handling."""
+    """Send one request to Firestore, adding the API key and error handling.
+
+    Args:
+        extra_params: Extra query parameters, merged over the API key.
+        allow_not_found: Return a 404 response instead of raising, for callers
+            that treat a missing document as a normal outcome.
+
+    Raises:
+        FirestoreError: On a transport failure or an error status.
+    """
     params: dict[str, Any] = {"key": os.getenv("FIREBASE_API_KEY", "")}
     if extra_params:
         params.update(extra_params)
@@ -119,6 +132,8 @@ def _request(
     except httpx.HTTPError as exc:
         raise FirestoreError(f"Firestore request failed: {exc}") from exc
 
+    if response.status_code == 404 and allow_not_found:
+        return response
     if response.status_code >= 400:
         detail = response.text[:300]
         raise FirestoreError(f"Firestore returned {response.status_code}: {detail}")
@@ -135,18 +150,9 @@ def set_document(collection: str, document_id: str, data: dict[str, Any]) -> dic
 def get_document(collection: str, document_id: str) -> dict | None:
     """Read one document, or None when it does not exist."""
     url = f"{_base_url()}/{collection}/{document_id}"
-    api_key = os.getenv("FIREBASE_API_KEY", "")
-    try:
-        response = httpx.get(url, params={"key": api_key}, timeout=10.0)
-    except httpx.HTTPError as exc:
-        raise FirestoreError(f"Firestore request failed: {exc}") from exc
-
+    response = _request("GET", url, allow_not_found=True)
     if response.status_code == 404:
         return None
-    if response.status_code >= 400:
-        raise FirestoreError(
-            f"Firestore returned {response.status_code}: {response.text[:300]}"
-        )
     return _from_fields(response.json().get("fields", {}))
 
 

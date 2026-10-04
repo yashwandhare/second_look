@@ -1,11 +1,5 @@
-"""Hackathon backend — API routes."""
+"""HTTP route modules.
 
-from fastapi import APIRouter
-
-router = APIRouter(prefix="/api/v1", tags=["hackathon"])
-
-
-@router.get("/status")
-async def status():
-    """Return service status."""
-    return {"status": "ok"}
+Endpoints are declared in the module that owns them, for example
+`routes.audit`. This package holds no routes of its own.
+"""

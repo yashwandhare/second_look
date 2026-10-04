@@ -48,18 +48,25 @@ def _server_port() -> int:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Run startup and shutdown work."""
-    logger.info("Hackathon backend starting up")
-    logger.info("Database: %s", os.getenv("DATABASE_URL", "sqlite:///./hackathon.db"))
+    """Log start and stop so container output shows the process lifecycle."""
+    logger.info(
+        "Second Look starting | gemini=%s firestore=%s",
+        "ready" if os.getenv("GEMINI_API_KEY", "").strip() else "missing",
+        "ready" if firestore.is_configured() else "missing",
+    )
     yield
-    logger.info("Hackathon backend shutting down")
+    logger.info("Second Look stopping")
 
 
 def create_app() -> FastAPI:
     """Build the FastAPI application."""
     app = FastAPI(
-        title="PromptWars Hackathon",
-        description="Minimal hackathon backend — adapt to the problem statement",
+        title="Second Look",
+        description=(
+            "Audits how a person reasons about a decision and surfaces the "
+            "assumptions, omissions and contradictions in their thinking. "
+            "It never recommends an option."
+        ),
         version="1.0.0",
         lifespan=lifespan,
     )
@@ -129,32 +136,23 @@ def create_app() -> FastAPI:
 
     # Serve the frontend from the same origin as the API. One deploy and one
     # URL then cover both, so production needs no CORS configuration.
-    frontend_dir = Path(__file__).resolve().parents[1] / "frontend"
-
-    if frontend_dir.is_dir():
-        app.mount(
-            "/static",
-            StaticFiles(directory=str(frontend_dir)),
-            name="static",
-        )
-
-        @app.get("/", include_in_schema=False)
-        async def index() -> FileResponse:
-            """Serve the frontend entry page."""
-            return FileResponse(frontend_dir / "index.html")
-
-    else:
-
-        @app.get("/")
-        async def root() -> dict:
-            """Report API entry points when no frontend directory is present."""
-            return {
-                "message": "PromptWars Hackathon API",
-                "docs": "/docs",
-                "health": "/api/health",
-            }
-
     app.include_router(audit_router)
+
+    frontend_dir = Path(__file__).resolve().parents[1] / "frontend"
+    if not frontend_dir.is_dir():
+        # Deployed without the frontend, for example an API-only environment.
+        return app
+
+    app.mount(
+        "/static",
+        StaticFiles(directory=str(frontend_dir)),
+        name="static",
+    )
+
+    @app.get("/", include_in_schema=False)
+    async def index() -> FileResponse:
+        """Serve the frontend entry page."""
+        return FileResponse(frontend_dir / "index.html")
 
     return app
 
